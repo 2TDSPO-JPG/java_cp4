@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "T_BRINQUEDO")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,7 +30,12 @@ public class Brinquedo {
     private String code;
 
     @PrePersist
-    public void prePersist(){if (this.code.isEmpty()){generateCode();}}
+    @PreUpdate
+    public void prePersist(){
+        if (this.code == null || this.code.isBlank()){
+            generateCode();
+        }
+    }
 
     private String generateCode(){
         String codeFunc = UUID.randomUUID().toString().replace("[0-9]", "").substring(0, 8).toUpperCase();
