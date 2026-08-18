@@ -205,9 +205,9 @@ docker run -p 8082:8082 \
 
 A aplicação foi disponibilizada na plataforma **Render**, via Docker.
 
-🔗 **Link da aplicação em produção:** `[COLE AQUI A URL DO RENDER]`
+🔗 **Link da aplicação em produção:** `https://java-cp4.onrender.com/mercado`
 
-🔗 **Repositório GitHub:** `[COLE AQUI O LINK DO REPOSITÓRIO]`
+🔗 **Repositório GitHub:** `https://github.com/2TDSPO-JPG/java_cp4.git`
 
 ### Como o deploy foi feito
 
