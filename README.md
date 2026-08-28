@@ -1,8 +1,12 @@
-# BlackMarket API — Mercado Express
+# BlackMarket — Mercado Express
 
-Aplicação desenvolvida em **Spring Boot (Maven)** para uma empresa do tipo **mercado express** (meias, produtos de limpeza, frutas, etc.), com CRUD completo integrado ao banco de dados **Oracle FIAP**, seguindo o padrão REST com boas práticas de tratamento de exceções.
+Aplicação desenvolvida em **Spring Boot (Maven)** para uma empresa do tipo **mercado express** (meias, produtos de limpeza, frutas, etc.), com CRUD completo integrado ao banco de dados **Oracle FIAP**.
 
-Projeto acadêmico desenvolvido para a disciplina **[nome da disciplina/curso]** — FIAP.
+O projeto contempla:
+- **Parte 1** — API REST pura (Postman/Insomnia), com HATEOAS.
+- **Parte 2** — Interface Web (Spring MVC + Thymeleaf), com o mesmo CRUD acessível via navegador, protegida por Spring Security.
+
+Projeto acadêmico — Checkpoint 4 — FIAP, Curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TDS).
 
 ## 👥 Integrantes
 
@@ -17,11 +21,13 @@ Projeto acadêmico desenvolvido para a disciplina **[nome da disciplina/curso]**
 - Spring Web (MVC)
 - Spring Data JPA
 - Spring HATEOAS
+- Spring Security
+- Thymeleaf
 - Bean Validation (Jakarta Validation)
 - Lombok
 - Oracle JDBC (ojdbc11)
 - Maven
-- Postman / Insomnia (testes)
+- Postman / Insomnia (testes da API)
 - Docker (deploy)
 
 ## 🗄️ Modelagem no banco de dados
@@ -30,18 +36,18 @@ Tabela criada automaticamente via JPA/Hibernate (`ddl-auto=update`) no schema Or
 
 **Tabela:** `TDS_TB_MERCADO`
 
-| Coluna      | Tipo    | Descrição                         |
-|-------------|---------|-------------------------------------|
-| ID          | NUMBER  | Chave primária (auto incremento)   |
-| NOME        | VARCHAR | Nome do produto                    |
-| DESCRICAO   | VARCHAR | Descrição do produto               |
-| PRECO       | NUMBER  | Preço do produto                   |
-| TIPO        | VARCHAR | Tipo do produto                    |
-| SETOR       | VARCHAR | Setor do mercado (ex: hortifruti, limpeza, higiene) |
-| TAMANHO     | NUMBER  | Tamanho/volume do produto          |
-| CODE        | VARCHAR | Código único gerado automaticamente (ex: `PROD-XXXXXXXX`) |
+| Coluna    | Tipo    | Descrição                                                  |
+|-----------|---------|-------------------------------------------------------------|
+| ID        | NUMBER  | Chave primária (auto incremento)                            |
+| NOME      | VARCHAR | Nome do produto                                              |
+| DESCRICAO | VARCHAR | Descrição do produto                                         |
+| PRECO     | NUMBER  | Preço do produto                                             |
+| TIPO      | VARCHAR | Tipo do produto                                              |
+| SETOR     | VARCHAR | Setor do mercado (ex: hortifruti, limpeza, higiene)          |
+| TAMANHO   | NUMBER  | Tamanho/volume do produto                                    |
+| CODE      | VARCHAR | Código único gerado automaticamente (ex: `PROD-XXXXXXXX`)    |
 
-> Os campos `descricao` e `code` foram acrescentados aos exigidos no enunciado (`Id, Nome, Tipo, Setor, Tamanho, Preco`) para enriquecer o cadastro do produto. O `code` é gerado automaticamente pela entidade no evento `@PrePersist`/`@PreUpdate`.
+> Os campos `descricao` e `code` foram acrescentados aos exigidos no enunciado (`Id, Nome, Tipo, Setor, Tamanho, Preco`) para enriquecer o cadastro do produto. O `code` é gerado automaticamente pela entidade no evento `@PrePersist`/`@PreUpdate`, e não pode ser alterado manualmente em nenhuma atualização.
 
 ### Configuração da conexão (`application.properties`)
 
@@ -56,45 +62,48 @@ spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+
+# usuario para login na interface web (Spring Security)
+spring.security.user.name=admin
+spring.security.user.password=admin123
 ```
 
-## 📌 Endpoints da API (CRUD completo)
+---
+
+## 📌 Parte 1 — API REST
 
 Base URL local: `http://localhost:8082/mercado`
 
-| Método | Endpoint                                    | Operação CRUD | Descrição                              |
-|--------|-----------------------------------------------|----------------|------------------------------------------|
-| GET    | `/mercado`                                   | Read           | Lista todos os produtos cadastrados     |
-| GET    | `/mercado/buscar-id-{id}`                    | Read           | Busca um produto específico pelo ID     |
-| POST   | `/mercado`                                   | Create         | Cadastra um novo produto                |
-| PUT    | `/mercado/atualizar`                         | Update         | Atualiza todos os dados de um produto   |
-| PATCH  | `/mercado/atualizar-parcialmente-id-{id}`    | Update         | Atualiza campos específicos do produto  |
-| DELETE | `/mercado/deletar-id-{id}`                   | Delete         | Remove um produto pelo ID               |
+| Método | Endpoint                                   | Operação CRUD | Descrição                              |
+|--------|---------------------------------------------|----------------|------------------------------------------|
+| GET    | `/mercado`                                  | Read           | Lista todos os produtos cadastrados     |
+| GET    | `/mercado/buscar-id-{id}`                   | Read           | Busca um produto específico pelo ID     |
+| POST   | `/mercado`                                  | Create         | Cadastra um novo produto                |
+| PUT    | `/mercado/atualizar`                        | Update         | Atualiza todos os dados de um produto   |
+| PATCH  | `/mercado/atualizar-parcialmente-id-{id}`   | Update         | Atualiza campos específicos do produto  |
+| DELETE | `/mercado/deletar-id-{id}`                  | Delete         | Remove um produto pelo ID               |
 
-## 🧪 Testes via Postman / Insomnia
+> A partir da Parte 2, o grupo de rotas `/mercado/**` passou a exigir autenticação (Spring Security). Ao testar via Postman/Insomnia, utilize **Basic Auth** com o usuário/senha definidos em `application.properties`.
 
-> Todos os testes abaixo foram realizados com o servidor rodando localmente em `http://localhost:8082` (Tomcat embutido).
+### Testes via Postman / Insomnia
 
-### 1. GET — Listar todos os produtos
+Todos os testes abaixo foram realizados com o servidor rodando localmente em `http://localhost:8082` (Tomcat embutido).
 
+#### 1. GET — Listar todos os produtos
 **Requisição:** `GET http://localhost:8082/mercado`
-
-Retorna a lista de todos os produtos cadastrados no banco Oracle.
 
 `[PRINT AQUI — request e response do GET /mercado no Postman/Insomnia]`
 
-**Explicação:** ao acessar o endpoint, o `MercadoController` chama `mercadoService.listaDeBrinquedos()`, que por sua vez utiliza `mercadoRepository.findAll()` para consultar todos os registros da tabela `TDS_TB_MERCADO` e retorná-los em formato JSON.
+**Explicação:** o `MercadoController` chama `mercadoService.listaDeBrinquedos()`, que utiliza `mercadoRepository.findAll()` para consultar todos os registros da tabela `TDS_TB_MERCADO` e retorná-los em JSON.
 
-### 2. GET — Buscar produto por ID
-
+#### 2. GET — Buscar produto por ID
 **Requisição:** `GET http://localhost:8082/mercado/buscar-id-1`
 
 `[PRINT AQUI — request e response do GET por ID]`
 
-**Explicação:** o `id` é enviado via path variable. O `MercadoService` consulta o produto no banco; caso não exista, é lançada a exceção `EntidadeNaoEncontradaException`, tratada pelo `GlobalExceptionHandler` e retornada com status `404 Not Found`.
+**Explicação:** o `id` é enviado via path variable. Caso o produto não exista, é lançada `EntidadeNaoEncontradaException`, tratada pelo `GlobalExceptionHandler` e retornada com status `404 Not Found`.
 
-### 3. POST — Criar novo produto
-
+#### 3. POST — Criar novo produto
 **Requisição:** `POST http://localhost:8082/mercado`
 
 **Body (JSON):**
@@ -111,10 +120,9 @@ Retorna a lista de todos os produtos cadastrados no banco Oracle.
 
 `[PRINT AQUI — request com o body acima e response com o produto criado, incluindo id e code gerados]`
 
-**Explicação:** o corpo da requisição é recebido pelo `@RequestBody` e mapeado para a entidade `Mercado`. No momento de persistir, o método `prePersist()` gera automaticamente o `code` do produto (ex: `PROD-12345678`), e o `id` é gerado pelo Oracle via `GenerationType.IDENTITY`.
+**Explicação:** o corpo é recebido via `@RequestBody` e mapeado para a entidade `Mercado`. Ao persistir, `prePersist()` gera automaticamente o `code` (ex: `PROD-12345678`), e o `id` é gerado pelo Oracle via `GenerationType.IDENTITY`.
 
-### 4. PUT — Atualizar produto (completo)
-
+#### 4. PUT — Atualizar produto (completo)
 **Requisição:** `PUT http://localhost:8082/mercado/atualizar`
 
 **Body (JSON):**
@@ -132,10 +140,9 @@ Retorna a lista de todos os produtos cadastrados no banco Oracle.
 
 `[PRINT AQUI — request e response do PUT]`
 
-**Explicação:** o `PUT` exige o `id` do produto existente. Caso o campo `code` seja informado no corpo da requisição, a API lança `ErrorDeParametroException` (400 Bad Request), pois o código do produto não pode ser alterado manualmente.
+**Explicação:** exige o `id` do produto existente. Se o campo `code` for informado no corpo, a API lança `ErrorDeParametroException` (400 Bad Request), já que o código não pode ser alterado manualmente.
 
-### 5. PATCH — Atualizar produto (parcial)
-
+#### 5. PATCH — Atualizar produto (parcial)
 **Requisição:** `PATCH http://localhost:8082/mercado/atualizar-parcialmente-id-1`
 
 **Body (JSON):**
@@ -147,38 +154,85 @@ Retorna a lista de todos os produtos cadastrados no banco Oracle.
 
 `[PRINT AQUI — request e response do PATCH]`
 
-**Explicação:** apenas os campos enviados no corpo são atualizados; os demais permanecem inalterados. A lógica está em `MercadoService.atualizarParcialmente()`, que verifica campo a campo se há valor novo antes de atualizar.
+**Explicação:** apenas os campos enviados são atualizados; os demais permanecem inalterados (`MercadoService.atualizarParcialmente()`).
 
-### 6. DELETE — Remover produto
-
+#### 6. DELETE — Remover produto
 **Requisição:** `DELETE http://localhost:8082/mercado/deletar-id-1`
 
 `[PRINT AQUI — request e response do DELETE]`
 
-**Explicação:** o produto é localizado pelo `id` e removido do banco via `mercadoRepository.delete()`. A API retorna a mensagem `"Brinquedo deletado com sucesso!"` como confirmação.
+**Explicação:** o produto é localizado pelo `id` e removido via `mercadoRepository.delete()`. A API retorna `"Brinquedo deletado com sucesso!"` como confirmação.
 
-### 7. Tratamento de erros
+#### 7. Tratamento de erros
 
 `[PRINT AQUI — exemplo de erro 404 ao buscar um ID inexistente]`
 
-`[PRINT AQUI — exemplo de erro 400 ao tentar validar um campo obrigatório vazio, ex: nome em branco]`
+`[PRINT AQUI — exemplo de erro 400 ao validar um campo obrigatório vazio, ex: nome em branco]`
 
-**Explicação:** as validações (`@NotBlank`, `@NotNull`) são aplicadas na entidade `Mercado` via Bean Validation. Exceções de negócio (`EntidadeNaoEncontradaException`, `ErrorDeParametroException`) são centralizadas no `GlobalExceptionHandler`, retornando respostas HTTP padronizadas (404 e 400).
+**Explicação:** validações (`@NotBlank`, `@NotNull`) são aplicadas na entidade `Mercado`. Exceções de negócio (`EntidadeNaoEncontradaException`, `ErrorDeParametroException`) são centralizadas no `GlobalExceptionHandler`, retornando respostas HTTP padronizadas.
 
-## 🔗 HATEOAS
+### 🔗 HATEOAS
 
-> A dependência `spring-boot-starter-hateoas` está incluída no projeto para suportar o padrão REST de nível de maturidade 3, adicionando links de navegação (`_links`) diretamente nas respostas JSON (ex: link para o próprio recurso, para a listagem geral, para atualização e exclusão), permitindo que o cliente navegue pela API sem precisar conhecer as URLs de antemão.
+A dependência `spring-boot-starter-hateoas` está incluída no projeto para suportar o padrão REST de nível de maturidade 3, adicionando links de navegação (`_links`) diretamente nas respostas JSON, permitindo que o cliente navegue pela API sem conhecer as URLs de antemão.
 
 `[PRINT AQUI — response de um endpoint mostrando o campo "_links"]`
 
+---
+
+## 🖥️ Parte 2 — Interface Web (Spring MVC + Thymeleaf)
+
+Além da API REST, o projeto conta com uma interface Web completa, construída com **Thymeleaf**, que consome a mesma camada de serviço/persistência da Parte 1 (mesmo banco Oracle FIAP) — permitindo listar, cadastrar, editar e excluir produtos diretamente pelo navegador.
+
+Base URL local: `http://localhost:8082`
+
+| Ação                          | Rota                          | Método    | Acesso            |
+|--------------------------------|--------------------------------|-----------|-------------------|
+| Página inicial                | `/firstpage`                  | GET       | Público           |
+| Listar produtos                | `/produtos`                   | GET       | Público           |
+| Visualizar / abrir edição      | `/produtos/{id}`              | GET       | Público           |
+| Exibir formulário de cadastro  | `/produtos/novo`              | GET       | **Requer login**  |
+| Cadastrar produto              | `/produtos/novo`              | POST      | **Requer login**  |
+| Atualizar produto              | `/produtos/{id}/atualizar`    | POST      | **Requer login**  |
+| Excluir produto                | `/produtos/{id}/deletar`      | POST      | **Requer login**  |
+
+### 🔐 Segurança (Spring Security)
+
+O projeto define rotas **públicas** (leitura: listar e visualizar produtos) e rotas **privadas** (escrita: criar, atualizar e excluir), exigindo autenticação via formulário de login (`formLogin`) para as ações de escrita.
+
+Usuário de teste (definido em `application.properties`):
+```
+usuário: admin
+senha:   admin123
+```
+
+### 🧭 Fluxo de telas
+
+1. **`/produtos`** — tabela com todos os produtos cadastrados e botão **"+ Cadastrar novo produto"**.
+
+   `[PRINT AQUI — tela de listagem de produtos]`
+
+2. **`/produtos/novo`** — formulário de cadastro. Ao logar e salvar, o produto é gravado via `mercadoService.salvarBrinquedo()` e o usuário é redirecionado para a listagem.
+
+   `[PRINT AQUI — formulário de cadastro de produto]`
+
+3. **`/produtos/{id}`** — tela de detalhe do produto, que também serve como tela de edição: mostra o `code` (somente leitura) e os demais campos editáveis, com botões **Salvar alterações** e **Deletar produto** (com confirmação).
+
+   `[PRINT AQUI — tela de visualização/edição de um produto]`
+
+4. Após salvar ou excluir, o usuário retorna automaticamente para `/produtos`.
+
+   `[PRINT AQUI — tela de login exigida ao tentar cadastrar/editar/excluir sem estar autenticado]`
+
+---
+
 ## ⚙️ Variáveis de ambiente (produção)
 
-| Variável                     | Descrição                                   |
-|-------------------------------|----------------------------------------------|
-| `PORT`                        | Porta da aplicação (definida pela plataforma de deploy) |
-| `SPRING_DATASOURCE_URL`       | URL JDBC do banco Oracle FIAP                |
-| `SPRING_DATASOURCE_USERNAME`  | Usuário (RM) do banco                        |
-| `SPRING_DATASOURCE_PASSWORD`  | Senha do banco                               |
+| Variável                     | Descrição                                                |
+|-------------------------------|-----------------------------------------------------------|
+| `PORT`                        | Porta da aplicação (definida pela plataforma de deploy)  |
+| `SPRING_DATASOURCE_URL`       | URL JDBC do banco Oracle FIAP                             |
+| `SPRING_DATASOURCE_USERNAME`  | Usuário (RM) do banco                                     |
+| `SPRING_DATASOURCE_PASSWORD`  | Senha do banco                                             |
 
 ## ▶️ Como executar localmente
 
@@ -189,6 +243,8 @@ cd SEU-REPOSITORIO
 ```
 
 A aplicação sobe em `http://localhost:8082`.
+- API REST: `http://localhost:8082/mercado`
+- Interface Web: `http://localhost:8082/produtos`
 
 ## 🐳 Como executar com Docker
 
@@ -205,7 +261,7 @@ docker run -p 8082:8082 \
 
 A aplicação foi disponibilizada na plataforma **Render**, via Docker.
 
-🔗 **Link da aplicação em produção:** `https://java-cp4.onrender.com/mercado`
+🔗 **Link da aplicação em produção:** `https://java-cp4.onrender.com/produtos`
 
 🔗 **Repositório GitHub:** `https://github.com/2TDSPO-JPG/java_cp4.git`
 
@@ -218,9 +274,9 @@ A aplicação foi disponibilizada na plataforma **Render**, via Docker.
 
 ---
 
-### Imagens 
+### Imagens
 
-![img.png](img.png)
+![img_1.png](img_1.png)
 
 ---
 

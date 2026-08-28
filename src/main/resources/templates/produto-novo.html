@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Produto</title>
+</head>
+<body>
+
+<h1>Cadastrar Produto</h1>
+
+<form th:action="@{/produtos/novo}" method="post">
+
+    <label>Nome:</label>
+    <input type="text" name="nome" required>
+
+    <br><br>
+
+    <label>Descrição:</label>
+    <input type="text" name="descricao" required>
+
+    <br><br>
+
+    <label>Preço:</label>
+    <input type="number" name="preco" step="0.01" required>
+
+    <br><br>
+
+    <label>Tipo:</label>
+    <input type="text" name="tipo" required>
+
+    <br><br>
+
+    <label>Setor:</label>
+    <input type="text" name="setor" required>
+
+    <br><br>
+
+    <label>Tamanho:</label>
+    <input type="number" name="tamanho" step="0.01" required>
+
+    <br><br>
+
+    <button type="submit">Cadastrar Produto</button>
+
+</form>
+
+<br>
+
+<a th:href="@{/produtos}">Voltar para produtos</a>
+
+<style>
+    body {
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: 40px auto;
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    label {
+        display: inline-block;
+        width: 100px;
+    }
+
+    input {
+        padding: 6px;
+        width: 60%;
+    }
+
+    button {
+        padding: 8px 16px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+</style>
+
+</body>
+</html>

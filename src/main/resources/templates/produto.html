@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Produto</title>
+</head>
+<body>
+<h1>Tabelas de produtos</h1>
+
+<p>Lista de produtos simples</p>
+
+<p style="text-align:center;">
+    <a th:href="@{/produtos/novo}">
+        <button type="button">+ Cadastrar novo produto</button>
+    </a>
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Preço</th>
+        <th>Tipo</th>
+        <th>Setor</th>
+        <th>Tamanho</th>
+        <th>Code</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="produto : ${produtos}">
+        <td th:text="${produto.id}"></td>
+        <td th:text="${produto.nome}"></td>
+        <td th:text="${produto.descricao}"></td>
+        <td th:text="${produto.preco}"></td>
+        <td th:text="${produto.tipo}"></td>
+        <td th:text="${produto.setor}"></td>
+        <td th:text="${produto.tamanho}"></td>
+        <td th:text="${produto.code}"></td>
+        <td>
+            <a th:href="@{/produtos/{id}(id=${produto.id})}">Ver / Editar / Deletar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+<style>
+
+    body {
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    p{
+        text-align: center;
+        font-size: 18px;
+    }
+
+    button {
+        padding: 8px 16px;
+        cursor: pointer;
+    }
+
+</style>
+
+</html>

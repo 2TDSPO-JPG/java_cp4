@@ -19,29 +19,34 @@ public class MercadoController {
         return mercadoService.buscarBrinquedoPorId(id);
     }
 
+
     @PostMapping
     public Mercado criarProduto(@RequestBody Mercado mercado){
+        System.out.println("Cheguei no controller para criar o brinquedo: " + mercado);
         return mercadoService.salvarBrinquedo(mercado);
     }
+
 
     @DeleteMapping("/deletar-id-{id}")
     public String deletarProduto(@PathVariable Long id) {
         return mercadoService.deletarBrinquedo(id);
     }
 
+
     @PutMapping("/atualizar")
     public Mercado atualizarProduto(@RequestBody Mercado mercadoAtualizado) {
         return mercadoService.atualizarBrinquedo(mercadoAtualizado);
     }
+
 
     @GetMapping
     public List<Mercado> listarProduto() {
         return mercadoService.listaDeBrinquedos();
     }
 
+
     @PatchMapping("/atualizar-parcialmente-id-{id}")
     public Mercado atualizarProdutoParcialmente(@PathVariable Long id, @RequestBody Mercado parcialMerc) {
         return mercadoService.atualizarParcialmente(id, parcialMerc);
     }
-
 }

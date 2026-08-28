@@ -16,6 +16,7 @@ public class MercadoService {
 
     private final MercadoRepository mercadoRepository;
 
+
     public Mercado buscarBrinquedoPorId(Long id) {
         Optional<Mercado> brinquedo = mercadoRepository.findById(id);
         Mercado mercadoEncontrado = brinquedo.orElseThrow(() -> new EntidadeNaoEncontradaException("Brinquedo não encontrado"));
@@ -29,6 +30,9 @@ public class MercadoService {
     }
 
     public Mercado salvarBrinquedo(Mercado mercado){
+
+        System.out.println("Cheguei no service para salvar o brinquedo: " + mercado);
+
         Mercado mercado1 = Mercado.builder()
                 .nome(mercado.getNome())
                 .descricao(mercado.getDescricao())

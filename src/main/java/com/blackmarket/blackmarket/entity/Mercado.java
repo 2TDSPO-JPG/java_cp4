@@ -1,11 +1,9 @@
 package com.blackmarket.blackmarket.entity;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.util.UUID;
 
 @Entity
@@ -17,6 +15,7 @@ import java.util.UUID;
 @Builder
 @ToString
 public class Mercado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,9 +43,7 @@ public class Mercado {
 
     private String generateCode(){
         String codeFunc = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8).toUpperCase();
-        while (codeFunc.length() < 8){
-            codeFunc += UUID.randomUUID().toString().replaceAll("[^0-9]", "");
-        }
+        while (codeFunc.length() < 8){codeFunc += UUID.randomUUID().toString().replaceAll("[^0-9]", "");}
         this.code = "PROD-" + codeFunc.substring(0, 8);
         return this.code;
     }
