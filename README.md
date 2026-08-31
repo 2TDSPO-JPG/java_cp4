@@ -257,6 +257,11 @@ docker run -p 8082:8082 \
   blackmarket
 ```
 
+## Login Spring
+
+ - Usuário: `admin`
+ - Senha: `admin123`
+
 ## ☁️ Deploy
 
 A aplicação foi disponibilizada na plataforma **Render**, via Docker.
