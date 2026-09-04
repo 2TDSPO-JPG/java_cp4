@@ -270,6 +270,10 @@ A aplicação foi disponibilizada na plataforma **Render**, via Docker.
 
 🔗 **Repositório GitHub:** `https://github.com/2TDSPO-JPG/java_cp4.git`
 
+🔗 **Link do Vídeo:** `https://youtu.be/XlL9iDfULJM`
+
+
+
 ### Como o deploy foi feito
 
 1. Repositório publicado no GitHub com o `Dockerfile` na raiz do projeto.
